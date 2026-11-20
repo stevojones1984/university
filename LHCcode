@@ -1,0 +1,243 @@
+import os
+import time
+import sys
+
+# Initialize the stored artefacts using a lists
+artefacts = [
+    "War Photo", "Arrowhead", "Canopic Jar", "Katana",
+    "Victorian Mirror", "Candelabra", "Queen Elizabeth I Portrait", "Incan Pot",
+    "Pharaoh Bust", "Luger Pistol"
+]
+rented_status = [False] * len(artefacts)  # Corresponding status for each artefact
+
+artefact_category = [
+    "Image", "Weapon", "Display", "Weapon",
+    "Display", "Display", "Image", "Display",
+    "Display", "Weapon"
+]
+
+artefact_location = [
+    "Display Cabinet A", "Display Cabinet B", "Display Cabinet C", "Display Cabinet B",
+    "Display Cabinet C", "Display Cabinet C", "Display Cabinet A", "Display Cabinet C",
+    "Display Cabinet C", "Display Cabinet B"
+]
+
+artefact_condition = [
+    "Good", "Good", "Damaged", "Good",
+    "Under Repair", "Damaged", "Good", "Damaged",
+    "Good", "Under Repair"
+]
+
+def clear_screen():
+    """Clears the console screen."""
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+def display_menu():
+    """Displays the main menu options."""
+    print("\n--- LHC Artefact Management System ---")
+    print("1. View Stored Artefacts")
+    print("2. Add New Artefact")
+    print("3. Update Artefact Condition")
+    print("4. Rent Out Artefact")
+    print("5. Return Rented Artefact")
+    print("6. Search Artefacts")
+    print("7. Exit")
+    print("----------------------------------")
+
+
+def view_stored_artefacts():
+    """Displays the list or artefacts, including category, location and condition."""
+    clear_screen()
+    print("\nAvailable Artefacts:")
+    available = False
+    for i in range(len(artefacts)):
+        if not rented_status[i]:
+            print("Artefact:", artefacts[i])
+            print("Category:", artefact_category[i])
+            print("Location:", artefact_location[i])
+            print("Condition:", artefact_condition[i])
+            print("----------------------------------")
+            available = True
+
+    if not available:
+        print("No Artefacts available.")
+
+    time.sleep(2)  # Pause for readability
+
+
+def add_artefact():
+    """Allows the user to add a new artefact to the system."""
+    clear_screen()
+    print("--- Add New Artefact ---")
+
+    # Ask user for artefact details
+    name = input("Enter artefact name: ")
+    category = input("Enter artefact category: ")
+    location = input("Enter artefact location: ")
+
+    print("Select condition:")
+    print("1. Good")
+    print("2. Damaged")
+    print("3. Under Repair")
+
+    choice = input("Enter condition choice: ")
+
+    if choice == "1":
+        condition = "Good"
+    elif choice == "2":
+        condition = "Damaged"
+    elif choice == "3":
+        condition = "Under Repair"
+    else:
+        print("Invalid choice!")
+        return
+
+    # Add information to the lists
+    artefacts.append(name)
+    artefact_category.append(category)
+    artefact_location.append(location)
+    artefact_condition.append(condition)
+    rented_status.append(False)
+
+    print("Artefact successfully added!")
+
+    time.sleep(2)
+
+def update_condition():
+    """Allows the user to update the artefact condition."""
+    clear_screen()
+    print("--- Update Artefact Condition ---")
+
+    # Display stored artefacts
+    for i in range(len(artefacts)):
+        print(i, artefacts[i], "-", artefact_condition[i])
+
+    # Ask which artefact to update
+    index = int(input("Enter the artefact index to update: "))
+
+    # Display condition options
+    print("Select new condition:")
+    print("1. Good")
+    print("2. Damaged")
+    print("3. Under Repair")
+
+    choice = input("Enter your choice: ")
+
+    # Update condition
+    if choice == "1":
+        artefact_condition[index] = "Good"
+
+    elif choice == "2":
+        artefact_condition[index] = "Damaged"
+
+    elif choice == "3":
+        artefact_condition[index] = "Under Repair"
+
+    else:
+        print("Invalid choice!")
+        return
+
+    print("Artefact condition successfully updated!")
+
+    time.sleep(2)
+
+def rent_artefact():
+    """Allows the user to rent out an artefact."""
+    clear_screen()
+    artefact_name = input("Enter the name of the artefact you want to rent out: ").strip()
+
+    if artefact_name in artefacts:
+        index = artefacts.index(artefact_name)
+        if not rented_status[index]:
+            rented_status[index] = True
+            print(f"You have rented '{artefact_name}'.")
+        else:
+            print(f"'{artefact_name}' is already rented.")
+    else:
+        print("Artefact not found.")
+
+    time.sleep(2)
+
+
+def return_artefact():
+    """Allows the user to return a rented artefact."""
+    clear_screen()
+    artefact_name = input("Enter the name of the artefact you want to return: ").strip()
+
+    if artefact_name in artefacts:
+        index = artefacts.index(artefact_name)
+        if rented_status[index]:
+            rented_status[index] = False
+            print(f"You have returned '{artefact_name}'.")
+        else:
+            print(f"'{artefact_name}' was not rented.")
+    else:
+        print("Artefact not found.")
+
+    time.sleep(2)
+
+def search_artefacts():
+    """Allows the user to search for artefacts."""
+    clear_screen()
+    search_term = input("Enter the name of the artefact you're searching for: ").strip().lower()
+
+    found = False
+
+    for i in range(len(artefacts)):
+
+        if (search_term in artefacts[i].lower()):
+
+            print("Artefact Found!")
+            print("Name:", artefacts[i])
+            print("Category:", artefact_category[i])
+            print("Location:", artefact_location[i])
+            print("Condition:", artefact_condition[i])
+            found = True
+
+
+    if not found:
+        print("No matching artefacts found.")
+
+    time.sleep(2)
+
+
+
+def exit_program():
+    """Exits the program gracefully."""
+    print("Exiting the system. Have a great day!")
+    time.sleep(2)
+    sys.exit()
+
+
+def main():
+    """Main function to run the artefact management system."""
+    while True:
+        clear_screen()
+        display_menu()
+        choice = input("Enter your choice (1-7): ")
+
+        if choice == '1':
+            view_stored_artefacts()
+        elif choice == '2':
+            add_artefact()
+        elif choice == '3':
+            update_condition()
+        elif choice == '4':
+            rent_artefact()
+        elif choice == '5':
+            return_artefact()
+        elif choice == '6':
+            search_artefacts()
+        elif choice == '7':
+            exit_program()
+        else:
+            print("Invalid choice. Please select a valid option.")
+            time.sleep(2)
+
+
+# Run the artefact management system
+if __name__ == "__main__":
+    main()
+
+
